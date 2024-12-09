@@ -19,13 +19,13 @@ from scripts.queries import (CREATE_MATCH_USER_TABLE_QUERY, INSERT_MATCH_USER_TA
 
 
 
-def match_user_to_sql(_file_dir, _dag_exec_time, _user_name, _password, _host, _port, _database) :
+def match_user_to_sql(_file_dir, _task_time, _user_name, _password, _host, _port, _database) :
     start_time = time.time()
 
     with open(os.path.join(_file_dir, 'new_user_dict.json'), 'r') as file:
-        new_user_dict = json.load(file)  # Pass the file object to json.load
+        new_user_dict = json.load(file)
 
-    filtered_match_user_df = pd.read_csv(os.path.join(_file_dir, f'match_user_{_dag_exec_time}.csv'))
+    filtered_match_user_df = pd.read_csv(os.path.join(_file_dir, f'match_user_{_task_time}.csv'))
     
     engine = db_conn(_user_name, _password, _host, _port, _database)
 

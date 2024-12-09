@@ -8,30 +8,31 @@ from sqlalchemy import create_engine, text
 
 
 
-def fetch_data(url_, params_, headers_):
-    response = requests.get(url_, params = params_, headers = headers_)
+def fetch_data(_url, _params, _headers):
+    response = requests.get(_url, params = _params, headers = _headers)
 
     if response.status_code == 200:
         # print(f"Successed to fetch data from {url_}.") 
         return response.json()
         
     else:
-        print(f"Error: Failed to fetch data from {url_}. Status Code: {response.status_code}")
+        print(f"Error: Failed to fetch data from {_url}. Status Code: {response.status_code}")
+
         return None
 
-def db_conn(username_, password_, host_, port_, database_) : 
+def db_conn(_username, _password, _host, _port, _database) : 
     db_engine = sqlalchemy.engine.URL.create(
         drivername = "mysql+pymysql",
-        username = username_,
-        password = password_,
-        host = host_,
-        port = port_,
-        database = database_,
+        username = _username,
+        password = _password,
+        host = _host,
+        port = _port,
+        database = _database,
     )
 
     return create_engine(db_engine)
 
-def position_rating(match_user_) :  
+def position_rating(_match_user) :  
     attack_position = [i for i in range(9, 20)]
     middle_position = [i for i in range(20, 28)]
     defense_position = [i for i in range(1, 9)]
@@ -42,7 +43,7 @@ def position_rating(match_user_) :
     defense_rating = []
     goalkeeper_rating = []
     
-    for player in match_user_['player'] : 
+    for player in _match_user['player'] : 
         if player['spPosition'] == 28 :                             # 후보선수 제외
             continue
 
@@ -60,34 +61,34 @@ def position_rating(match_user_) :
 
     return round(np.mean(attack_rating), 2), round(np.mean(middle_rating), 2), round(np.mean(defense_rating), 2), round(np.mean(goalkeeper_rating), 2)
 
-def append_match_user_data(match_user_data_, match_ouid_, match_user_, new_user_dict_):
-    attack_position_ratings, middle_position_ratings, defense_position_ratings, goalkeeper_position_ratings = position_rating(match_user_)
-        
-    match_user_data_.append({
-        'match_id': match_ouid_,
-        'user_ouid': match_user_['ouid'],
-        'user_nickname': match_user_['nickname'],
-        'match_result': match_user_['matchDetail']['matchResult'],
-        'match_possession': match_user_['matchDetail']['possession'],
-        'match_avg_rating': match_user_['matchDetail']['averageRating'],
-        'match_total_dribble': match_user_['matchDetail']['dribble'],
-        'match_total_pass_try': match_user_['pass']['passTry'],
-        'match_total_pass_suc': match_user_['pass']['passSuccess'],
-        'match_total_shoot': match_user_['shoot']['shootTotal'],
-        'match_total_shoot_eff': match_user_['shoot']['effectiveShootTotal'],
-        'match_total_goal': match_user_['shoot']['goalTotal'],
+def append_match_user_data(_match_user_data, _match_ouid, _match_user):
+    attack_position_ratings, middle_position_ratings, defense_position_ratings, goalkeeper_position_ratings = position_rating(_match_user)
+    
+    _match_user_data.append({
+        'match_id': _match_ouid,
+        'user_ouid': _match_user['ouid'],
+        'user_nickname': _match_user['nickname'],
+        'match_result': _match_user['matchDetail']['matchResult'],
+        'match_possession': _match_user['matchDetail']['possession'],
+        'match_avg_rating': _match_user['matchDetail']['averageRating'],
+        'match_total_dribble': _match_user['matchDetail']['dribble'],
+        'match_total_pass_try': _match_user['pass']['passTry'],
+        'match_total_pass_suc': _match_user['pass']['passSuccess'],
+        'match_total_shoot': _match_user['shoot']['shootTotal'],
+        'match_total_shoot_eff': _match_user['shoot']['effectiveShootTotal'],
+        'match_total_goal': _match_user['shoot']['goalTotal'],
         'attack_position_ratings': attack_position_ratings,
         'middle_position_ratings': middle_position_ratings,
         'defense_position_ratings': defense_position_ratings,
         'goalkeeper_position_ratings': goalkeeper_position_ratings,
 
-        'match_total_pass_short_try': match_user_['pass']['shortPassTry'],
-        'match_total_pass_short_suc': match_user_['pass']['shortPassSuccess'],
-        'match_total_pass_long_try': match_user_['pass']['longPassTry'],
-        'match_total_pass_long_suc': match_user_['pass']['longPassSuccess'],
-        'match_total_pass_through_try': match_user_['pass']['throughPassTry'],
-        'match_total_pass_through_suc': match_user_['pass']['throughPassSuccess'],
-        'match_total_shoot_outpenalty_try': match_user_['shoot']['shootOutPenalty'],
-        'match_total_shoot_outpenalty_suc': match_user_['shoot']['goalOutPenalty'],
-        'match_total_shoot_inpenalty_try': match_user_['shoot']['shootInPenalty'],
-        'match_total_shoot_inpenalty_suc': match_user_['shoot']['goalInPenalty']})
+        'match_total_pass_short_try': _match_user['pass']['shortPassTry'],
+        'match_total_pass_short_suc': _match_user['pass']['shortPassSuccess'],
+        'match_total_pass_long_try': _match_user['pass']['longPassTry'],
+        'match_total_pass_long_suc': _match_user['pass']['longPassSuccess'],
+        'match_total_pass_through_try': _match_user['pass']['throughPassTry'],
+        'match_total_pass_through_suc': _match_user['pass']['throughPassSuccess'],
+        'match_total_shoot_outpenalty_try': _match_user['shoot']['shootOutPenalty'],
+        'match_total_shoot_outpenalty_suc': _match_user['shoot']['goalOutPenalty'],
+        'match_total_shoot_inpenalty_try': _match_user['shoot']['shootInPenalty'],
+        'match_total_shoot_inpenalty_suc': _match_user['shoot']['goalInPenalty']})
