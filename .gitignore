@@ -1,0 +1,12 @@
+__pycache__/
+config/
+logs/
+plugins/
+
+.ipynb_checkpoints/
+.git/
+
+*.csv
+*.env
+*.yaml
+*.json
