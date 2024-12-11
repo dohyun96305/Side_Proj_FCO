@@ -62,3 +62,30 @@ INSERT_USER_METADATA_TABLE_QUERY = """
     INSERT IGNORE INTO user_metadata (user_ouid, user_nickname)
     VALUES (:user_ouid, :user_nickname);    
 """
+
+CREATE_SHOOT_USER_DETAIL_TABLE_QUERY = """
+    CREATE TABLE IF NOT EXISTS shoot_user_detail (
+        match_id VARCHAR(40),
+        user_ouid VARCHAR(40),
+        match_result VARCHAR(5),
+        shoot_result INT, 
+        shoot_time INT,
+        shoot_position_x FLOAT,
+        shoot_position_y FLOAT,
+        shoot_assist BOOLEAN,   
+        shoot_assist_X FLOAT,
+        shoot_assist_Y FLOAT,
+        shoot_inpenalty BOOLEAN,
+
+        PRIMARY KEY (match_id, user_ouid, shoot_time)
+    );
+"""
+
+INSERT_SHOOT_USER_DETAIL_TABLE_QUERY = """
+    INSERT IGNORE INTO shoot_user_detail (match_id, user_ouid, match_result, shoot_result, 
+                                          shoot_time, shoot_position_x, shoot_position_y, 
+                                          shoot_assist, shoot_assist_X, shoot_assist_Y, shoot_inpenalty)
+    VALUES (:match_id, :user_ouid, :match_result, :shoot_result, 
+            :shoot_time, :shoot_position_x, :shoot_position_y, 
+            :shoot_assist, :shoot_assist_X, :shoot_assist_Y, :shoot_inpenalty);
+"""

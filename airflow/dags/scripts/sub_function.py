@@ -61,6 +61,26 @@ def position_rating(_match_user) :
 
     return round(np.mean(attack_rating), 2), round(np.mean(middle_rating), 2), round(np.mean(defense_rating), 2), round(np.mean(goalkeeper_rating), 2)
 
+def shoot_time_convert(_shoot_time) :
+    half_time_interval = 2**24
+
+    if 0 <= _shoot_time < half_time_interval:
+        converted_time = _shoot_time
+        
+    elif half_time_interval <= _shoot_time < 2 * half_time_interval:
+        converted_time = _shoot_time - half_time_interval + 45 * 60
+        
+    elif 2 * half_time_interval <= _shoot_time < 3 * half_time_interval:
+        converted_time = _shoot_time - 2 * half_time_interval + 90 * 60
+        
+    elif 3 * half_time_interval <= _shoot_time < 4 * half_time_interval:
+        converted_time = _shoot_time - 3 * half_time_interval + 105 * 60
+        
+    elif 4 * half_time_interval <= _shoot_time < 5 * half_time_interval:
+        converted_time = _shoot_time - 4 * half_time_interval + 120 * 60
+
+    return converted_time 
+
 def append_match_user_data(_match_user_data, _match_ouid, _match_user):
     attack_position_ratings, middle_position_ratings, defense_position_ratings, goalkeeper_position_ratings = position_rating(_match_user)
     
@@ -92,3 +112,18 @@ def append_match_user_data(_match_user_data, _match_ouid, _match_user):
         'match_total_shoot_outpenalty_suc': _match_user['shoot']['goalOutPenalty'],
         'match_total_shoot_inpenalty_try': _match_user['shoot']['shootInPenalty'],
         'match_total_shoot_inpenalty_suc': _match_user['shoot']['goalInPenalty']})
+
+def append_shoot_detail_data(_shoot_detail_data, _match_ouid, _match_user_ouid, match_result, _shoot_detail):
+    _shoot_detail_data.append({
+        'match_id': _match_ouid,
+        'user_ouid': _match_user_ouid,
+        'match_result': match_result,
+        'shoot_result': _shoot_detail['result'],
+        'shoot_time': shoot_time_convert(_shoot_detail['goalTime']),
+        'shoot_position_x': _shoot_detail['x'],
+        'shoot_position_y': _shoot_detail['y'],
+        'shoot_assist': _shoot_detail['assist'],
+        'shoot_assist_X': _shoot_detail['assistX'],
+        'shoot_assist_Y': _shoot_detail['assistY'],
+        'shoot_inpenalty': _shoot_detail['inPenalty']
+    })
