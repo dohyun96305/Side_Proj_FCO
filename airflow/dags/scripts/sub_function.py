@@ -64,19 +64,19 @@ def position_rating(_match_user) :
 def shoot_time_convert(_shoot_time) :
     half_time_interval = 2**24
 
-    if 0 <= _shoot_time < half_time_interval:
+    if 0 <= _shoot_time < half_time_interval - 1 :  # 전반전
         converted_time = _shoot_time
         
-    elif half_time_interval <= _shoot_time < 2 * half_time_interval:
+    elif half_time_interval <= _shoot_time < 2 * half_time_interval - 1:    # 후반전
         converted_time = _shoot_time - half_time_interval + 45 * 60
         
-    elif 2 * half_time_interval <= _shoot_time < 3 * half_time_interval:
+    elif 2 * half_time_interval <= _shoot_time < 3 * half_time_interval - 1:    # 연장-전반
         converted_time = _shoot_time - 2 * half_time_interval + 90 * 60
         
-    elif 3 * half_time_interval <= _shoot_time < 4 * half_time_interval:
+    elif 3 * half_time_interval <= _shoot_time < 4 * half_time_interval - 1:    # 연장-후반
         converted_time = _shoot_time - 3 * half_time_interval + 105 * 60
         
-    elif 4 * half_time_interval <= _shoot_time < 5 * half_time_interval:
+    elif 4 * half_time_interval <= _shoot_time < 5 * half_time_interval - 1:    # 승부차기
         converted_time = _shoot_time - 4 * half_time_interval + 120 * 60
 
     return converted_time 
