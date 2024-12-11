@@ -15,24 +15,29 @@ from sqlalchemy import create_engine, text
 
 from scripts.sub_function import db_conn
 from scripts.queries import (CREATE_MATCH_USER_TABLE_QUERY, INSERT_MATCH_USER_TABLE_QUERY, 
-                     CREATE_USER_METADATA_TABLE_QUERY, INSERT_USER_METADATA_TABLE_QUERY)
+                     CREATE_USER_METADATA_TABLE_QUERY, INSERT_USER_METADATA_TABLE_QUERY,
+                     CREATE_SHOOT_USER_DETAIL_TABLE_QUERY, INSERT_SHOOT_USER_DETAIL_TABLE_QUERY)
 
 
 
-def match_user_to_sql(_file_dir, _dag_exec_time, _user_name, _password, _host, _port, _database) :
+def match_user_to_sql(_file_dir, _task_time, _user_name, _password, _host, _port, _database) :
     start_time = time.time()
 
-    with open(os.path.join(_file_dir, 'new_user_dict.json'), 'r') as file:
-        new_user_dict = json.load(file)  # Pass the file object to json.load
-
-    filtered_match_user_df = pd.read_csv(os.path.join(_file_dir, f'match_user_{_dag_exec_time}.csv'))
-    
     engine = db_conn(_user_name, _password, _host, _port, _database)
 
+    with open(os.path.join(_file_dir, 'new_user_dict.json'), 'r') as file:
+        new_user_dict = json.load(file)
+
+    filtered_match_user_df = pd.read_csv(os.path.join(_file_dir, f'match_user_{_task_time}.csv'))
+    shoot_user_detail_df = pd.read_csv(os.path.join(_file_dir, f'shoot_user_detail_{_task_time}.csv'))
+    
     create_user_metadata_table_query = CREATE_USER_METADATA_TABLE_QUERY
-    insert_user_metadata_table_query = INSERT_USER_METADATA_TABLE_QUERY
     create_match_user_table_query = CREATE_MATCH_USER_TABLE_QUERY
+    create_shoot_user_detail_table_query = CREATE_SHOOT_USER_DETAIL_TABLE_QUERY
+
+    insert_user_metadata_table_query = INSERT_USER_METADATA_TABLE_QUERY
     insert_match_user_table_query = INSERT_MATCH_USER_TABLE_QUERY
+    insert_shoot_user_detail_table_query = INSERT_SHOOT_USER_DETAIL_TABLE_QUERY
 
     with engine.connect() as connection:
         trans = connection.begin()  
@@ -40,6 +45,7 @@ def match_user_to_sql(_file_dir, _dag_exec_time, _user_name, _password, _host, _
         try:
             connection.execute(text(create_match_user_table_query))
             connection.execute(text(create_user_metadata_table_query))
+            connection.execute(text(create_shoot_user_detail_table_query))
 
             try:
                 count_user = 0
@@ -53,8 +59,13 @@ def match_user_to_sql(_file_dir, _dag_exec_time, _user_name, _password, _host, _
                 for index, row in filtered_match_user_df.iterrows():
                     connection.execute(text(insert_match_user_table_query), row.to_dict())
                     count_match += 1
+                
+                count_shoot = 0
+                for index, row in shoot_user_detail_df.iterrows():
+                    connection.execute(text(insert_shoot_user_detail_table_query), row.to_dict())
+                    count_shoot += 1
 
-                print(f'Successfully added {count_user} user and {count_match} match data to tables')
+                print(f'Successfully added {count_user} user and {count_match} match data and {count_shoot} shoot data to tables')
 
             except Exception as insert_e:
                 print(f"Error occurred while adding data: {insert_e}")

@@ -44,7 +44,7 @@ def slack_success_callback(context):
             :large_green_circle: Task Succeeded.
             *Dag*: {dag}  
             *Task*: {task}
-            *Execution Time*: {exec_date}  
+            *Task_Time*: {exec_date}  
             """.format(
                 dag = context.get('task_instance').dag_id,
                 task = context.get('task_instance').task_id,
@@ -63,8 +63,8 @@ def slack_failure_callback(context):
                 :red_circle: Task Failed.
                 *Dag*: {dag}  
                 *Task*: {task}
-                *Execution Time*: {exec_date}  
-                *Log Url*: {log_url}
+                *Task_Time*: {exec_date}  
+                *Log_Url*: {log_url}
                 """.format(
                     dag = context.get('task_instance').dag_id,
                     task = context.get('task_instance').task_id,
@@ -78,8 +78,8 @@ def slack_failure_callback(context):
 with DAG(
         dag_id = 'match_user_dag', 
         description = 'DAG for match_user', 
-        start_date = datetime(2022, 1, 1),
-        schedule_interval = "@daily", 
+        start_date = datetime(2024, 12, 9, 20, tzinfo = timezone('Asia/Seoul')),
+        schedule_interval="5 */2 * * *",  # Execute every 2 hours
         default_args = default_args, 
         catchup = False) as dag:
 
@@ -107,7 +107,7 @@ with DAG(
                 op_kwargs = {
                     '_api_key' : Variable.get("api_key"), 
                     '_file_dir' : Variable.get("file_dir"),
-                    '_dag_exec_time' : "{{ execution_date.in_timezone('Asia/Seoul').strftime('%Y_%m_%d_%H') }}" 
+                    '_task_time' : "{{ logical_date.in_timezone('Asia/Seoul').strftime('%Y_%m_%d_%H') }}" 
                 },
                 on_success_callback = slack_success_callback,
                 on_failure_callback = slack_failure_callback
@@ -118,7 +118,7 @@ with DAG(
                 python_callable = match_user_to_sql,
                 op_kwargs = {
                     '_file_dir' : Variable.get("file_dir"),
-                    '_dag_exec_time': "{{ execution_date.in_timezone('Asia/Seoul').strftime('%Y_%m_%d_%H') }}",
+                    '_task_time': "{{ logical_date.in_timezone('Asia/Seoul').strftime('%Y_%m_%d_%H') }}",
                     '_user_name' : Variable.get("airflow_user_name"),
                     '_password' : Variable.get("airflow_password"),
                     '_host' : Variable.get("airflow_host"),
@@ -129,6 +129,5 @@ with DAG(
                 on_failure_callback = slack_failure_callback
             )
 
-            # Define the task dependencies
             # print_task
             get_metadata_task >> match_user_processing_task >> match_user_to_sql_task
