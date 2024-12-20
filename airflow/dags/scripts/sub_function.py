@@ -89,6 +89,7 @@ def append_match_user_data(_match_user_data, _match_ouid, _match_user):
         'user_ouid': _match_user['ouid'],
         'user_nickname': _match_user['nickname'],
         'match_result': _match_user['matchDetail']['matchResult'],
+        'match_endtype': _match_user['matchDetail']['matchEndType'],
         'match_possession': _match_user['matchDetail']['possession'],
         'match_avg_rating': _match_user['matchDetail']['averageRating'],
         'match_total_dribble': _match_user['matchDetail']['dribble'],
