@@ -12,6 +12,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from airflow.providers.mysql.operators.mysql import MySqlOperator
+from airflow.sensors.filesystem import FileSensor
 from airflow.models.variable import Variable
 
 from scripts.request_metadata import get_metadata
@@ -101,6 +102,14 @@ with DAG(
                 on_failure_callback = slack_failure_callback
             )
 
+            file_sensor_metadtaa = FileSensor(
+                task_id = 'file_sensor_metadata',
+                fs_conn_id = 'file_sensor_metadata',
+                filepath = 'matchType_metadata.csv', 
+                poke_interval = 10, 
+                timeout = 60
+            )
+
             match_user_processing_task = PythonOperator(
                 task_id = 'match_user_processing_task',
                 python_callable = match_user_processing,
@@ -130,4 +139,4 @@ with DAG(
             )
 
             # print_task
-            get_metadata_task >> match_user_processing_task >> match_user_to_sql_task
+            get_metadata_task >> file_sensor_metadtaa >> match_user_processing_task >> match_user_to_sql_task

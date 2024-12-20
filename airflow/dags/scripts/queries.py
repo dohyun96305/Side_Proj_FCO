@@ -3,7 +3,8 @@ CREATE_MATCH_USER_TABLE_QUERY = """
         match_id VARCHAR(40),         
         user_ouid VARCHAR(40),        
         user_nickname VARCHAR(50),      
-        match_result VARCHAR(5),                             
+        match_result VARCHAR(5), 
+        match_endtype INT,                            
         match_possession INT,                               
         match_avg_rating FLOAT,                              
         match_total_dribble INT,                              
@@ -32,7 +33,7 @@ CREATE_MATCH_USER_TABLE_QUERY = """
 """
 
 INSERT_MATCH_USER_TABLE_QUERY = """
-    INSERT IGNORE INTO match_user (match_id, user_ouid, user_nickname, match_result, match_possession, match_avg_rating, 
+    INSERT IGNORE INTO match_user (match_id, user_ouid, user_nickname, match_result, match_endtype, match_possession, match_avg_rating, 
                                    match_total_dribble, match_total_pass_try, match_total_pass_suc, match_total_shoot, 
                                    match_total_shoot_eff, match_total_goal, 
                                    attack_position_ratings, middle_position_ratings, defense_position_ratings, goalkeeper_position_ratings,
@@ -41,7 +42,7 @@ INSERT_MATCH_USER_TABLE_QUERY = """
                                    match_total_pass_through_try, match_total_pass_through_suc, 
                                    match_total_shoot_outpenalty_try, match_total_shoot_outpenalty_suc, 
                                    match_total_shoot_inpenalty_try, match_total_shoot_inpenalty_suc)
-    VALUES (:match_id, :user_ouid, :user_nickname, :match_result, :match_possession, :match_avg_rating, 
+    VALUES (:match_id, :user_ouid, :user_nickname, :match_result, :match_endtype, :match_possession, :match_avg_rating, 
             :match_total_dribble, :match_total_pass_try, :match_total_pass_suc, :match_total_shoot, 
             :match_total_shoot_eff, :match_total_goal,
             :attack_position_ratings, :middle_position_ratings, :defense_position_ratings, :goalkeeper_position_ratings,
