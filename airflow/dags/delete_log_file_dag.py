@@ -68,26 +68,27 @@ with DAG(
         default_args = default_args, 
         catchup = False) as dag:
     
-    delete_log = BashOperator(
+    delete_log_task = BashOperator(
         task_id = 'delete_log',
         
         bash_command = """
-            find /opt/airflow/dags/files/* -type f -not -name '.gitkeep' -mtime +1 -exec rm -r {} \;
+            find /opt/airflow/logs/ -type f -mtime +0 -exec rm -rf {} \;
+            find /opt/airflow/logs/ -type d -mtime +0 -empty -exec rm -rf {} \;        
         """,
 
         on_success_callback = slack_success_callback,
         on_failure_callback = slack_failure_callback
     )
 
-    delete_file = BashOperator(
+    delete_file_task = BashOperator(
         task_id = 'delete_file',
         
         bash_command = """
-            find /opt/airflow/dags/files/* -type f -mtime +1 -exec rm -r {} \;
+            find /opt/airflow/dags/files/* -type f -not -name '.gitkeep' -mtime +0 -exec rm {} \;
         """,
 
         on_success_callback = slack_success_callback,
         on_failure_callback = slack_failure_callback
     )
 
-    delete_log >> delete_file
+    delete_log_task >> delete_file_task

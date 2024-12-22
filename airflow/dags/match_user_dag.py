@@ -92,7 +92,7 @@ with DAG(
             # ) 
 
             get_metadata_task = PythonOperator(
-                task_id = 'get_metadata_task',
+                task_id = 'get_metadata',
                 python_callable = get_metadata,
                 op_kwargs = {
                     '_api_key' : Variable.get("api_key"),
@@ -102,7 +102,7 @@ with DAG(
                 on_failure_callback = slack_failure_callback
             )
 
-            file_sensor_metadtaa = FileSensor(
+            file_sensor_metadata_task = FileSensor(
                 task_id = 'file_sensor_metadata',
                 fs_conn_id = 'file_sensor_metadata',
                 filepath = 'matchType_metadata.csv', 
@@ -111,7 +111,7 @@ with DAG(
             )
 
             match_user_processing_task = PythonOperator(
-                task_id = 'match_user_processing_task',
+                task_id = 'match_user_processing',
                 python_callable = match_user_processing,
                 op_kwargs = {
                     '_api_key' : Variable.get("api_key"), 
@@ -139,4 +139,4 @@ with DAG(
             )
 
             # print_task
-            get_metadata_task >> file_sensor_metadtaa >> match_user_processing_task >> match_user_to_sql_task
+            get_metadata_task >> file_sensor_metadata_task >> match_user_processing_task >> match_user_to_sql_task
