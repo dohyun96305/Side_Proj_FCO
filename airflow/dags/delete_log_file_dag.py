@@ -91,4 +91,4 @@ with DAG(
         on_failure_callback = slack_failure_callback
     )
 
-    delete_log >> delete_file
+    delete_log_task >> delete_file_task

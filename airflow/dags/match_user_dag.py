@@ -139,4 +139,4 @@ with DAG(
             )
 
             # print_task
-            get_metadata_task >> file_sensor_metadtaa >> match_user_processing_task >> match_user_to_sql_task
+            get_metadata_task >> file_sensor_metadata_task >> match_user_processing_task >> match_user_to_sql_task
