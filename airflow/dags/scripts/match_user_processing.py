@@ -30,7 +30,7 @@ def match_user_processing(_api_key, _file_dir, _task_time) :
 
     match_id_url = 'https://open.api.nexon.com/fconline/v1/match?'
     match_id_params = {'matchtype' : matchType_df.loc[matchType_df['matchName'] == '공식경기', 'matchType'].iloc[0], 
-                       'offset' : 0, 'limit' : 100}
+                       'offset' : 50000, 'limit' : 80}
 
     match_id_json = fetch_data(match_id_url, match_id_params, headers) 
     
