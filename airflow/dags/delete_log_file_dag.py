@@ -72,8 +72,7 @@ with DAG(
         task_id = 'delete_log',
         
         bash_command = """
-            find /opt/airflow/logs/ -type f -mtime +0 -exec rm -rf {} \;
-            find /opt/airflow/logs/ -type d -mtime +0 -empty -exec rm -rf {} \;        
+            find /opt/airflow/logs/ -type d -mtime +0 -exec rm -rf {} \;        
         """,
 
         on_success_callback = slack_success_callback,
