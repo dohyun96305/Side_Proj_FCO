@@ -2,6 +2,7 @@ __pycache__/
 config/
 logs/
 plugins/
+practice/
 
 .ipynb_checkpoints/
 .git/
